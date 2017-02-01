@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test Server</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="main.css">
+        <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+    </head>
+    <body onLoad="loadValue()">
+        <br><br>
+        <center>
+            
+        <textarea id="textArea" placeholder="Pepe-the-frog"></textarea>
+            
+        <br><br>
+        <input type="button" value="Send" onclick="send();">
+        <input type="button" value="Again" onclick="loadValue();">
+            
+        <br><br><br><br>
+            <img src="imgs/pepe-young.jpg" alt="pepe">
+        </center>
+    
+        <script>
+            var test = {
+                    "name": "api",
+                    "version": "0.0.1",
+                    "description": "Ourclothe API",
+                    "main": "index.js",
+                    "scripts": {
+                        "test": "node ./node_modules/.bin/mocha --reporter spec test/main.js"
+                    },
+                    "repository": {
+                        "type": "git",
+                        "url": "git@git.udom.tk:ourclothe/ourclothe-api.git"
+                    },
+                    "keywords": [
+                        "api",
+                        "server"
+                    ],
+                    "author": "Grigorii Horos",
+                    "license": "SEE LICENSE IN LICENSE.md",
+                    "dependencies": {
+                        "body-parser": "^1.14.1",
+                        "cookie-parser": "^1.4.0",
+                        "express": "^4.13.3",
+                        "express-session": "^1.12.1",
+                        "moment": "^2.10.6",
+                        "multer": "^1.1.0",
+                        "mysql": "^2.9.0",
+                        "serve-favicon": "^2.3.0",
+                         "validator": "^4.2.1"
+                    },
+                    "devDependencies": {
+                        "mocha": "^2.3.3",
+                        "prettyjson": "^1.1.3",
+                        "request": "^2.67.0",
+                        "supertest": "^1.1.0",
+                        "supervisor": "^0.9.1"
+                    }
+                };
+            
+            
+            
+            function loadValue(){
+                document.getElementById("textArea").value= JSON.stringify(test);
+            }
+            
+            
+            
+            function send() {
+                var textAreaText = $('textArea').val();
+                
+                $.ajax({
+                    url: 'JsonTestServlet',
+                    type: "post",
+                    dataType: 'json',
+                    data: textAreaText,
+                    contentType: 'application/json',
+                    mimeType: 'application/json',
+                    
+                    success: function (data) {
+                        document.getElementById("textArea").value = data.toString();
+                    },
+                    
+                    error: function(data,status,er) {
+                        console.log("error: " + data +";\nstatus: "+ status +"; \ner: "+ er);
+                    }
+                    
+                });
+            }
+        </script>
+    </body>
+</html>
