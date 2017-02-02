@@ -1,4 +1,4 @@
-//1.2.17 16:06 v0.9
+//3.2.16 01:25 v0.1
 package com.hubb.servertestmaven;
 
 import com.google.gson.Gson;
@@ -15,22 +15,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.hubb.manager.TestJSON;
+import com.hubb.credentials.NameEmailCredential;
 
 /**
  *
  * @author Richard Strauss
  */
-@WebServlet(name = "JsonTestServlet", urlPatterns = {"/JsonTestServlet"})
-public class JsonTestServlet extends HttpServlet {
-    private TestJSON tt;
-    
-    public JsonTestServlet() {
+@WebServlet(name = "CredentialsServlet", urlPatterns = {"/CredentialsServlet"})
+public class CredentialsServlet extends HttpServlet {
+    private NameEmailCredential cd;
+  
+    public CredentialsServlet(){
         super();
     }
-//-------------------------------------------------------------------------------------------------------------------
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
@@ -49,56 +48,41 @@ public class JsonTestServlet extends HttpServlet {
             str = br.readLine();
             
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            tt = gson.fromJson(str, TestJSON.class);
+            cd = gson.fromJson(str, NameEmailCredential.class);
 
-            
-            sb.append(tt.getAuthor()).append(" is a naughty boy.");
-            sb.append("\n").append(tt.toString());
-            sb.append("\n").append("POST method used");
-            
+            sb.append("Name: ").append(cd.getName()).append("\n");
+            sb.append("Email: ").append(cd.getEmail()).append("\n");
+
             out.write(toJson(sb.toString(), "1"));
             
         }catch(JsonSyntaxException ex){
-            Logger.getLogger(JsonTestServlet.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CredentialsServlet.class.getName()).log(Level.SEVERE, null, ex);
             out.write("Some Error Happened: " + ex.toString());
         }
     }
-      
-//-------------------------------------------------------------------------------------------------------------------
+
+    
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Methods", "POST, GET");
-        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        response.addHeader("Access-Control-Max-Age", "86400");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
         
-        PrintWriter out = response.getWriter();
-        String str;
-        StringBuilder sb = new StringBuilder();
-        
-        try{
-            BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            str = br.readLine();
-            
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            tt = gson.fromJson(str, TestJSON.class);
-
-            
-            sb.append(tt.getAuthor()).append(" is a naughty boy.");
-            sb.append("\n").append(tt.toString());
-            sb.append("\n").append("GET method used");
-            
-            out.write(toJson(sb.toString(), "1"));
-            
-        }catch(JsonSyntaxException ex){
-            Logger.getLogger(JsonTestServlet.class.getName()).log(Level.SEVERE, null, ex);
-            out.write("Some Error Happened: " + ex.toString());
+    }
+    
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try (PrintWriter out = response.getWriter()) {
+            out.println("No GET method for this servlet");
         }
     }
 
+    @Override
+    public String getServletInfo() {
+        return "No description for this servlet.";
+    }
+    
 //-------------------------------------------------------------------------------------------------------------------    
     public String toJson(Object obj, String dfString) {
         try{
@@ -122,8 +106,5 @@ public class JsonTestServlet extends HttpServlet {
     }
     
 //-------------------------------------------------------------------------------------------------------------------
-    @Override
-    public String getServletInfo() {
-        return "This is a Test Servlet, which is returning nothing but a bag full of json D's.";
-    }
 }
+
