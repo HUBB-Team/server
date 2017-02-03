@@ -1,9 +1,10 @@
-//3.2.16 01:25 v0.1
+//3.2.16 21:08 v0.3
 package com.hubb.servertestmaven;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.hubb.credentials.DBCredentials;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,10 +25,7 @@ import com.hubb.credentials.NameEmailCredential;
 @WebServlet(name = "CredentialsServlet", urlPatterns = {"/CredentialsServlet"})
 public class CredentialsServlet extends HttpServlet {
     private NameEmailCredential cd;
-  
-    public CredentialsServlet(){
-        super();
-    }
+    private DBCredentials db = new DBCredentials();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -38,21 +36,30 @@ public class CredentialsServlet extends HttpServlet {
         response.addHeader("Access-Control-Allow-Methods", "POST, GET");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type");
         response.addHeader("Access-Control-Max-Age", "86400");
-        
+
         PrintWriter out = response.getWriter();
-        String str;
+        String str, name, email;
         StringBuilder sb = new StringBuilder();
-        
         try{
             BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
             str = br.readLine();
             
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             cd = gson.fromJson(str, NameEmailCredential.class);
+            
+            try{
+                name = cd.getName();
+                email = cd.getEmail();
+                
+                sb.append("Name: ").append(name).append("\n");
+                sb.append("Email: ").append(email).append("\n");
+                sb.append("Inserted in DB: ").append(db.setDBCredentialsData(name, email)).append("\n");
 
-            sb.append("Name: ").append(cd.getName()).append("\n");
-            sb.append("Email: ").append(cd.getEmail()).append("\n");
-
+            }catch(Exception exe){
+                exe.printStackTrace(System.err);
+                sb.append("Name: ").append("no-name-default-err").append("\n");
+                sb.append("Email: ").append("no-email-default-err").append("\n");
+            }
             out.write(toJson(sb.toString(), "1"));
             
         }catch(JsonSyntaxException ex){
@@ -73,9 +80,8 @@ public class CredentialsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try (PrintWriter out = response.getWriter()) {
-            out.println("No GET method for this servlet");
-        }
+            processRequest(request, response);
+        
     }
 
     @Override

@@ -36,9 +36,6 @@ public class JsonTestServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Methods", "POST, GET");
-        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        response.addHeader("Access-Control-Max-Age", "86400");
         
         PrintWriter out = response.getWriter();
         String str;
@@ -51,7 +48,6 @@ public class JsonTestServlet extends HttpServlet {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             tt = gson.fromJson(str, TestJSON.class);
 
-            
             sb.append(tt.getAuthor()).append(" is a naughty boy.");
             sb.append("\n").append(tt.toString());
             sb.append("\n").append("POST method used");
@@ -71,9 +67,6 @@ public class JsonTestServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Methods", "POST, GET");
-        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        response.addHeader("Access-Control-Max-Age", "86400");
         
         PrintWriter out = response.getWriter();
         String str;
