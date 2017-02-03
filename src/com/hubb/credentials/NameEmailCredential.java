@@ -1,3 +1,4 @@
+//3.2.16 18:49 v0.3
 package com.hubb.credentials;
 
 import com.google.gson.annotations.Expose;
@@ -12,13 +13,17 @@ public class NameEmailCredential {
     @Expose
     private String email;
 
+    public NameEmailCredential(){
+        this.name = "";
+        this.email = "";
+    }
+    
 //------------------------------------------------------------------------------------    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Name= ").append(getName()).append("\n");
         sb.append("Email= ").append(getEmail()).append("\n");
-
         return sb.toString();
     }
 //------------------------------------------------------------------------------------
@@ -27,15 +32,15 @@ public class NameEmailCredential {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String inName) {
+        this.name = inName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String inEmail) {
+        this.email = inEmail;
     }
 }
